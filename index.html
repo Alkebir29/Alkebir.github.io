@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alkebir | Portfolio — monprofilal.com</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #020408;
+      --surface: #080f1a;
+      --surface2: #0d1825;
+      --gold: #f0b429;
+      --gold-dim: #b8860b;
+      --cyan: #00d4ff;
+      --purple: #7c3aed;
+      --green: #00ff88;
+      --red: #ff3366;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --border: rgba(0,212,255,0.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    }
+    main { position: relative; z-index: 2; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(2,4,8,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace; font-weight: 900; font-size: 1.3rem;
+      color: var(--gold); letter-spacing: 0.08em;
+      text-shadow: 0 0 20px rgba(240,180,41,0.5);
+    }
+    .nav-logo span { color: var(--cyan); }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 600;
+      color: var(--muted); text-decoration: none; letter-spacing: 0.12em;
+      text-transform: uppercase; transition: color 0.2s, text-shadow 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+    .nav-status {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--green);
+    }
+    .status-dot {
+      width: 7px; height: 7px; background: var(--green); border-radius: 50%;
+      box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 6rem 2rem 2rem; position: relative;
+    }
+    .hero-inner { max-width: 900px; text-align: center; }
+    .hero-tag {
+      display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 0.72rem;
+      color: var(--cyan); border: 1px solid var(--cyan); padding: 0.25rem 0.9rem;
+      margin-bottom: 1.5rem; letter-spacing: 0.18em;
+      background: rgba(0,212,255,0.04); animation: fadeIn 0.8s ease forwards;
+    }
+    .hero-name {
+      font-family: 'Orbitron', monospace; font-weight: 900;
+      font-size: clamp(3rem, 10vw, 7rem); line-height: 1; letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #f0b429 0%, #ffffff 50%, #00d4ff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; animation: fadeUp 0.9s ease 0.1s both; margin-bottom: 0.3rem;
+    }
+    .hero-subtitle {
+      font-family: 'Orbitron', monospace; font-size: clamp(0.65rem, 1.8vw, 0.95rem);
+      color: var(--gold); letter-spacing: 0.28em; text-transform: uppercase;
+      margin-bottom: 1.5rem; animation: fadeUp 0.9s ease 0.2s both;
+    }
+    .hero-domain {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;
+      color: var(--cyan); letter-spacing: 0.12em; margin-bottom: 1.5rem;
+      animation: fadeUp 0.9s ease 0.25s both;
+    }
+    .hero-desc {
+      font-size: 1.1rem; color: var(--muted); max-width: 580px;
+      margin: 0 auto 2.5rem; animation: fadeUp 0.9s ease 0.3s both;
+    }
+    .hero-desc em { color: var(--cyan); font-style: normal; }
+    .hero-btns {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.9s ease 0.4s both;
+    }
+    .btn {
+      font-family: 'Orbitron', monospace; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.8rem 2rem; border: none; cursor: pointer;
+      text-decoration: none; transition: all 0.25s; position: relative;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+    .btn-primary { background: var(--gold); color: #000; }
+    .btn-primary:hover { background: #fff; box-shadow: 0 0 24px rgba(240,180,41,0.5); transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--cyan); border: 1px solid var(--cyan); }
+    .btn-outline:hover { background: rgba(0,212,255,0.08); box-shadow: 0 0 16px rgba(0,212,255,0.25); transform: translateY(-2px); }
+    .btn-purple { background: transparent; color: var(--purple); border: 1px solid var(--purple); }
+    .btn-purple:hover { background: rgba(124,58,237,0.1); transform: translateY(-2px); }
+
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      font-family: 'Share Tech Mono', monospace; font-size: 0.62rem;
+      color: var(--muted); letter-spacing: 0.15em; animation: fadeIn 1.5s ease 1s both;
+    }
+    .scroll-line {
+      width: 1px; height: 36px;
+      background: linear-gradient(to bottom, var(--cyan), transparent);
+      animation: scrollDrop 1.5s ease infinite;
+    }
+    @keyframes scrollDrop {
+      0%{transform:scaleY(0);transform-origin:top}
+      50%{transform:scaleY(1);transform-origin:top}
+      51%{transform:scaleY(1);transform-origin:bottom}
+      100%{transform:scaleY(0);transform-origin:bottom}
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem; }
+    .section-num { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--cyan); letter-spacing: 0.1em; }
+    .section-title { font-family: 'Orbitron', monospace; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; color: var(--text); }
+    .section-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--cyan), transparent); }
+
+    /* ── ABOUT ── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 3rem; align-items: center; }
+    .about-avatar { width: 220px; height: 220px; margin: 0 auto; position: relative; }
+    .avatar-hex {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, var(--gold), var(--purple));
+      clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace; font-size: 3.5rem; font-weight: 900; color: #000;
+      animation: hexGlow 3s ease-in-out infinite;
+    }
+    @keyframes hexGlow { 0%,100%{filter:drop-shadow(0 0 12px rgba(240,180,41,0.4))} 50%{filter:drop-shadow(0 0 28px rgba(124,58,237,0.6))} }
+    .about-text h3 { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: var(--gold); margin-bottom: 1rem; }
+    .about-text p { color: var(--muted); font-size: 1rem; margin-bottom: 0.75rem; }
+    .about-text p strong { color: var(--text); }
+    .about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
+    .tag {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.25); padding: 0.2rem 0.6rem;
+      background: rgba(0,212,255,0.04); letter-spacing: 0.04em;
+    }
+
+    /* ── CURSUS TIMELINE ── */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: linear-gradient(to bottom, var(--gold), var(--purple), transparent);
+    }
+    .timeline-item { position: relative; margin-bottom: 2rem; }
+    .timeline-dot {
+      position: absolute; left: -2.4rem; top: 0.25rem;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--gold); box-shadow: 0 0 10px rgba(240,180,41,0.6);
+    }
+    .timeline-year {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.7rem;
+      color: var(--cyan); letter-spacing: 0.12em; margin-bottom: 0.2rem;
+    }
+    .timeline-title {
+      font-family: 'Orbitron', monospace; font-size: 0.95rem;
+      font-weight: 700; color: var(--text); margin-bottom: 0.2rem;
+    }
+    .timeline-sub { font-size: 0.9rem; color: var(--muted); }
+    .timeline-badge {
+      display: inline-block; margin-top: 0.3rem;
+      font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+      color: var(--gold); border: 1px solid rgba(240,180,41,0.3);
+      padding: 0.1rem 0.5rem; background: rgba(240,180,41,0.05);
+    }
+
+    /* ── MEMOIRE CARD ── */
+    .memoire-card {
+      background: var(--surface); border: 1px solid rgba(240,180,41,0.2);
+      border-left: 3px solid var(--gold); padding: 2rem; margin-top: 3rem;
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+    }
+    .memoire-card::before {
+      content: '📄'; position: absolute; top: 1rem; right: 1.5rem;
+      font-size: 2rem; opacity: 0.15;
+    }
+    .memoire-label {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+      color: var(--gold); letter-spacing: 0.2em; margin-bottom: 0.5rem;
+    }
+    .memoire-title {
+      font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.5rem;
+    }
+    .memoire-desc { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.2rem; }
+    .memoire-meta {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.2rem;
+      font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--muted);
+    }
+    .memoire-meta span { color: var(--cyan); }
+
+    /* ── LANGUES ── */
+    .langues-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+    .langue-card {
+      background: var(--surface); border: 1px solid var(--border); padding: 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+    }
+    .langue-name { font-family: 'Orbitron', monospace; font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem; }
+    .langue-level { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; margin-bottom: 0.8rem; }
+    .niveau-excellent { color: var(--gold); }
+    .niveau-inter { color: var(--cyan); }
+    .langue-bar-wrap { height: 3px; background: rgba(255,255,255,0.05); border-radius: 0; }
+    .langue-bar { height: 100%; border-radius: 0; transition: width 1.2s ease; }
+    .bar-gold { background: linear-gradient(to right, var(--gold-dim), var(--gold)); }
+    .bar-cyan { background: linear-gradient(to right, var(--purple), var(--cyan)); }
+
+    /* ── SKILLS ── */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.5rem; }
+    .skill-card {
+      background: var(--surface); border: 1px solid var(--border); padding: 1.5rem;
+      position: relative; overflow: hidden; transition: border-color 0.3s, transform 0.3s;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    }
+    .skill-card::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 0; height: 0;
+      border-left: 16px solid transparent; border-top: 16px solid var(--cyan); opacity: 0.3;
+    }
+    .skill-card:hover { border-color: rgba(0,212,255,0.4); transform: translateY(-4px); }
+    .skill-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+    .skill-name { font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+    .skill-items { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--muted); line-height: 1.9; }
+    .skill-bar-wrap { margin-top: 1rem; height: 2px; background: rgba(255,255,255,0.05); }
+    .skill-bar { height: 100%; background: linear-gradient(to right, var(--purple), var(--cyan)); }
+
+    /* ── MATHS LIST ── */
+    .maths-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+    .math-item {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.7rem;
+      color: var(--muted); border: 1px solid rgba(240,180,41,0.15);
+      padding: 0.5rem 0.8rem; background: rgba(240,180,41,0.03);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .math-item::before { content: '∑'; color: var(--gold); font-size: 0.8rem; }
+
+    /* ── FORMATIONS ── */
+    .formations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+    .formation-card {
+      background: var(--surface); border: 1px solid var(--border); padding: 1.5rem;
+      position: relative; transition: all 0.3s;
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    }
+    .formation-card:hover { border-color: rgba(124,58,237,0.4); transform: translateY(-3px); }
+    .formation-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+    .formation-name { font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+    .formation-status {
+      display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 0.62rem;
+      color: var(--green); border: 1px solid rgba(0,255,136,0.3);
+      padding: 0.1rem 0.5rem; background: rgba(0,255,136,0.05); margin-bottom: 0.5rem;
+    }
+    .formation-desc { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── PROJECTS ── */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 2rem; }
+    .project-card {
+      background: var(--surface); border: 1px solid var(--border); padding: 2rem;
+      position: relative; overflow: hidden; transition: all 0.3s;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+    .project-card:hover { border-color: rgba(240,180,41,0.35); transform: translateY(-4px); }
+    .project-type {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.62rem;
+      color: var(--gold); letter-spacing: 0.18em; margin-bottom: 0.75rem;
+    }
+    .project-title { font-family: 'Orbitron', monospace; font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.6rem; }
+    .project-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .project-tech { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tech-chip {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--purple);
+      border: 1px solid rgba(124,58,237,0.25); padding: 0.15rem 0.5rem;
+      background: rgba(124,58,237,0.05);
+    }
+
+    /* ── VISION ── */
+    .vision-block {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--gold); padding: 2.5rem; position: relative; overflow: hidden;
+    }
+    .vision-block::before {
+      content: '"'; position: absolute; top: -1rem; left: 1.5rem;
+      font-size: 8rem; color: rgba(240,180,41,0.05); font-family: Georgia, serif; line-height: 1;
+    }
+    .vision-text { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--text); line-height: 1.7; position: relative; z-index: 1; }
+    .vision-text em { color: var(--gold); font-style: normal; }
+    .vision-meta { margin-top: 2rem; display: flex; gap: 2.5rem; flex-wrap: wrap; }
+    .vision-stat { display: flex; flex-direction: column; }
+    .vision-stat-num { font-family: 'Orbitron', monospace; font-size: 1.8rem; font-weight: 900; color: var(--cyan); }
+    .vision-stat-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; }
+
+    /* ── CONTACT ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .contact-info h3 { font-family: 'Orbitron', monospace; font-size: 1rem; color: var(--gold); margin-bottom: 0.8rem; }
+    .contact-info p { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; }
+    .contact-links { display: flex; flex-direction: column; gap: 0.6rem; }
+    .contact-link {
+      display: flex; align-items: center; gap: 0.75rem;
+      color: var(--text); text-decoration: none;
+      font-family: 'Share Tech Mono', monospace; font-size: 0.78rem;
+      padding: 0.7rem 1rem; border: 1px solid var(--border);
+      background: var(--surface); transition: all 0.25s;
+    }
+    .contact-link:hover { border-color: var(--cyan); color: var(--cyan); padding-left: 1.5rem; }
+    .contact-link-icon { font-size: 1.1rem; width: 1.5rem; text-align: center; }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .form-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--cyan); letter-spacing: 0.15em; text-transform: uppercase; }
+    .form-input, .form-textarea {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 0.7rem 1rem;
+      font-family: 'Rajdhani', sans-serif; font-size: 0.95rem;
+      outline: none; transition: border-color 0.25s; resize: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--cyan); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border); padding: 2rem; text-align: center;
+      font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--muted);
+    }
+    footer span { color: var(--gold); }
+    footer a { color: var(--cyan); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0.8rem 1rem; }
+      .nav-links { display: none; }
+      .about-grid, .contact-grid, .langues-grid { grid-template-columns: 1fr; }
+      .hero-name { font-size: 2.8rem; }
+      section { padding: 3.5rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ALK<span>∞</span>BIR</div>
+  <ul class="nav-links">
+    <li><a href="#about">Profil</a></li>
+    <li><a href="#cursus">Cursus</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#formations">Formations</a></li>
+    <li><a href="#projects">Projets</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    DISPONIBLE
+  </div>
+</nav>
+
+<!-- HERO -->
+<main>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">// DÉVELOPPEUR · GAME DESIGNER · FREELANCER · VISIONNAIRE</div>
+    <h1 class="hero-name">ALKEBIR</h1>
+    <p class="hero-subtitle">Mouhamed Al-Kêbir AMOUSSA</p>
+    <p class="hero-domain">🌐 monprofilal.com</p>
+    <p class="hero-desc">
+      Mathématicien, développeur & architecte d'univers numériques.<br>
+      Je construis le <em>premier univers traditionnel Bénino-Africain</em> dans le jeu vidéo et l'animation mondiale.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-primary">Mes Projets</a>
+      <a href="memoire_grabcut_alkebir.pdf" download class="btn btn-outline">📄 Télécharger Mémoire</a>
+      <a href="#contact" class="btn btn-purple">Me Contacter</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-num">01.</span>
+    <h2 class="section-title">Profil</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-avatar reveal">
+      <div class="avatar-hex">A</div>
+    </div>
+    <div class="about-text reveal">
+      <h3>Qui suis-je ?</h3>
+      <p>
+        <strong>Mouhamed Al-Kêbir AMOUSSA</strong> — Diplômé en
+        <strong>Mathématiques Informatiques et Applications</strong> (Université d'Abomey-Calavi, 2025),
+        spécialisé en Mathématiques Fondamentales en Licence 3.
+      </p>
+      <p>
+        Passionné par la programmation, l'algorithmique et la création de <strong>mondes numériques</strong>
+        qui racontent l'histoire et les traditions de l'Afrique au monde entier.
+      </p>
+      <p>
+        Prochaine étape : <strong>Maîtrise en informatique — Jeux vidéo</strong> à l'UQAC, Québec (2027).
+      </p>
+      <div class="about-tags">
+        <span class="tag">C / C++ / POO</span>
+        <span class="tag">Python</span>
+        <span class="tag">Algorithmique</span>
+        <span class="tag">Bases de données</span>
+        <span class="tag">Game Design</span>
+        <span class="tag">Freelance</span>
+        <span class="tag">IA & Montage</span>
+        <span class="tag">Media Buying</span>
+        <span class="tag">Community Management</span>
+        <span class="tag">Culture Vodun & Africaine</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGUES -->
+  <div class="reveal" style="margin-top:3rem">
+    <div style="font-family:'Orbitron',monospace;font-size:0.95rem;color:var(--gold);margin-bottom:1rem;">🌐 Maîtrise des Langues</div>
+    <div class="langues-grid">
+      <div class="langue-card reveal">
+        <div class="langue-name">🇫🇷 Langue Française</div>
+        <div class="langue-level niveau-excellent">EXCELLENTE — Langue Maternelle</div>
+        <div class="langue-bar-wrap"><div class="langue-bar bar-gold" style="width:98%"></div></div>
+      </div>
+      <div class="langue-card reveal">
+        <div class="langue-name">🇬🇧 Langue Anglaise</div>
+        <div class="langue-level niveau-inter">INTERMÉDIAIRE — En progression</div>
+        <div class="langue-bar-wrap"><div class="langue-bar bar-cyan" style="width:55%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURSUS -->
+<section id="cursus">
+  <div class="section-header reveal">
+    <span class="section-num">02.</span>
+    <h2 class="section-title">Cursus Scolaire</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2011</div>
+      <div class="timeline-title">Certificat d'Études du Primaire (CEP)</div>
+      <div class="timeline-sub">Enseignement primaire — Bénin</div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2017</div>
+      <div class="timeline-title">Brevet d'Études du Premier Cycle (BEPC)</div>
+      <div class="timeline-sub">Série Moderne Court — Collège, Bénin</div>
+      <span class="timeline-badge">BEPC Moderne Court</span>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2021</div>
+      <div class="timeline-title">Baccalauréat — Série C</div>
+      <div class="timeline-sub">Sciences et Techniques — Lycée, Bénin</div>
+      <span class="timeline-badge">BAC C · Sciences & Techniques</span>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2021 – 2023</div>
+      <div class="timeline-title">Licence 1 & 2 — Mathématiques Informatiques et Applications (MIA)</div>
+      <div class="timeline-sub">Université d'Abomey-Calavi · Faculté des Sciences et Techniques · Département de Mathématiques</div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--cyan);box-shadow:0 0 10px rgba(0,212,255,0.7)"></div>
+      <div class="timeline-year">2023 – 2025</div>
+      <div class="timeline-title">Licence 3 — Mathématiques Fondamentales</div>
+      <div class="timeline-sub">Université d'Abomey-Calavi · Spécialisation Mathématiques Fondamentales</div>
+      <span class="timeline-badge" style="color:var(--cyan);border-color:rgba(0,212,255,0.3)">DIPLÔMÉ 2025</span>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--purple);box-shadow:0 0 10px rgba(124,58,237,0.7)"></div>
+      <div class="timeline-year">2027 — EN COURS</div>
+      <div class="timeline-title">Maîtrise en Informatique — Concentration Jeux Vidéo</div>
+      <div class="timeline-sub">Université du Québec à Chicoutimi (UQAC) · Candidature Automne 2027</div>
+      <span class="timeline-badge" style="color:var(--purple);border-color:rgba(124,58,237,0.3)">CANDIDATURE EN PRÉPARATION</span>
+    </div>
+  </div>
+
+  <!-- MEMOIRE -->
+  <div class="memoire-card reveal">
+    <div class="memoire-label">// MÉMOIRE DE LICENCE · 2025</div>
+    <div class="memoire-title">Algorithme de GrabCut pour la Segmentation d'Image</div>
+    <div class="memoire-desc">
+      Implémentation et évaluation de l'algorithme de GrabCut pour la segmentation d'images.
+      Combinaison de modèles de mélange gaussien (GMM) et de théorie des graphes pour une
+      séparation précise objet/arrière-plan. F1-score moyen de 0.80 — performances supérieures
+      aux méthodes traditionnelles.
+    </div>
+    <div class="memoire-meta">
+      <div>Directeur : <span>SANDA Tidjani</span></div>
+      <div>Co-auteur : <span>A.C.J. HOUNDETON</span></div>
+      <div>Outils : <span>Python · OpenCV · GMM</span></div>
+      <div>F1-Score : <span>0.80</span></div>
+      <div>Temps exec. : <span>0.34s/image</span></div>
+    </div>
+    <a href="memoire_grabcut_alkebir.pdf" download class="btn btn-primary" style="font-size:0.68rem">
+      ⬇ TÉLÉCHARGER LE MÉMOIRE (PDF)
+    </a>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">03.</span>
+    <h2 class="section-title">Compétences</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-icon">⚙️</div>
+      <div class="skill-name">Programmation</div>
+      <div class="skill-items">
+        C · C++ (POO)<br>
+        Programmation Orientée Objet<br>
+        Python · Algorithmique<br>
+        Structures de données
+      </div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:85%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🗄️</div>
+      <div class="skill-name">Bases de données</div>
+      <div class="skill-items">SQL · Modélisation<br>Conception de schémas<br>Normalisation</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:75%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🎮</div>
+      <div class="skill-name">Game Development</div>
+      <div class="skill-items">Platformer 2D · Level Design<br>Game Mechanics · Pixel Art<br>Game Loop · Physics</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:70%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🤖</div>
+      <div class="skill-name">Outils IA & Digital</div>
+      <div class="skill-items">
+        Montage IA · Setting IA<br>
+        Media Buying<br>
+        Copywriting · Marketing Digital
+      </div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:72%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🌐</div>
+      <div class="skill-name">Community & Gestion</div>
+      <div class="skill-items">Discord Admin · Modération<br>Gestion d'équipe · Événements<br>Stratégie communautaire</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:80%"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🎨</div>
+      <div class="skill-name">Création Digitale</div>
+      <div class="skill-items">Animation GIF · Pillow<br>ImageMagick · NumPy<br>Design Graphique · Emotes</div>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="width:65%"></div></div>
+    </div>
+  </div>
+
+  <!-- MATHS -->
+  <div style="margin-top:3rem" class="reveal">
+    <div style="font-family:'Orbitron',monospace;font-size:0.95rem;color:var(--gold);margin-bottom:1rem;">🧮 Programme Mathématiques — MIA / Maths Fondamentales</div>
+    <div class="maths-grid">
+      <div class="math-item">Algèbre Linéaire</div>
+      <div class="math-item">Analyse Réelle</div>
+      <div class="math-item">Calcul Différentiel & Intégral</div>
+      <div class="math-item">Probabilités & Statistiques</div>
+      <div class="math-item">Algèbre Générale (Groupes, Anneaux, Corps)</div>
+      <div class="math-item">Topologie</div>
+      <div class="math-item">Analyse Numérique</div>
+      <div class="math-item">Équations Différentielles</div>
+      <div class="math-item">Théorie des Graphes</div>
+      <div class="math-item">Logique & Théorie des Ensembles</div>
+      <div class="math-item">Optimisation</div>
+      <div class="math-item">Arithmétique</div>
+      <div class="math-item">Géométrie Différentielle</div>
+      <div class="math-item">Programmation Linéaire</div>
+      <div class="math-item">Mathématiques Discrètes</div>
+      <div class="math-item">Recherche Opérationnelle</div>
+      <div class="math-item">Système d'information et de Base de Données Relationnelles</div>
+      <div class="math-item">Langages Python et Scilab</div>
+      <div class="math-item">Traitement de Texte Scientifique par LaTeX</div>
+      <div class="math-item">Programmation en C++ Orientée Objet</div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMATIONS -->
+<section id="formations">
+  <div class="section-header reveal">
+    <span class="section-num">04.</span>
+    <h2 class="section-title">Formations Freelance</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="formations-grid">
+    <div class="formation-card reveal">
+      <div class="formation-icon">✍️</div>
+      <div class="formation-name">Copywriting</div>
+      <span class="formation-status">● EN COURS</span>
+      <div class="formation-desc">Rédaction persuasive, copywriting de vente, tunnels de conversion, storytelling pour marques et produits digitaux.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="formation-icon">🤖</div>
+      <div class="formation-name">Montage IA</div>
+      <span class="formation-status">● EN COURS</span>
+      <div class="formation-desc">Utilisation des outils d'intelligence artificielle pour la création et l'édition de contenu vidéo, audio et visuel automatisé.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="formation-icon">📣</div>
+      <div class="formation-name">Media Buying</div>
+      <span class="formation-status">● EN COURS</span>
+      <div class="formation-desc">Achat d'espaces publicitaires, stratégie de campagnes payantes (Meta Ads, Google Ads), optimisation du ROAS.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="formation-icon">⚙️</div>
+      <div class="formation-name">Setting IA</div>
+      <span class="formation-status">● EN COURS</span>
+      <div class="formation-desc">Configuration, paramétrage et optimisation d'outils et d'agents IA pour l'automatisation de workflows professionnels.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">05.</span>
+    <h2 class="section-title">Projets</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-type">// RECHERCHE ACADÉMIQUE · 2025</div>
+      <div class="project-title">GrabCut — Segmentation d'Image</div>
+      <div class="project-desc">
+        Mémoire de Licence : Implémentation complète de l'algorithme GrabCut.
+        F1-score 0.80, temps d'exécution 0.34s/image, comparaison avec CNN (U-Net).
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">OpenCV</span>
+        <span class="tech-chip">GMM</span>
+        <span class="tech-chip">Graph Cut</span>
+        <span class="tech-chip">Vision par Ordinateur</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-type">// GAME DEV</div>
+      <div class="project-title">Mini Platformer 2D & 3D</div>
+      <div class="project-desc">
+        Jeu de plateforme développé from scratch avec mécanique de saut,
+        niveaux progressifs, gestion des collisions et game loop.
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">Game Loop</span>
+        <span class="tech-chip">Physics</span>
+        <span class="tech-chip">2D Engine</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-type">// TOOLING · ANIMATION</div>
+      <div class="project-title">Emotes & Identité Discord</div>
+      <div class="project-desc">
+        Création d'emotes animées personnalisées (GIF 128×128) pour la communauté
+        One State RP FR : animations néon, or, effets glow, typographie dorée.
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">Python</span>
+        <span class="tech-chip">Pillow</span>
+        <span class="tech-chip">NumPy</span>
+        <span class="tech-chip">ImageMagick</span>
+        <span class="tech-chip">SciPy</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-type">// VISION · STRATÉGIE</div>
+      <div class="project-title">Valorisation Numérique Africaine</div>
+      <div class="project-desc">
+        Plan stratégique complet pour le premier univers Gaming/Anime ancré dans
+        les traditions Béninoises-Africaines — roadmap, world building, distribution mondiale.
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">World Building</span>
+        <span class="tech-chip">Game Design</span>
+        <span class="tech-chip">Lore Africain</span>
+        <span class="tech-chip">Stratégie</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-type">// COMMUNAUTÉ</div>
+      <div class="project-title">One State RP FR — Administrateur</div>
+      <div class="project-desc">
+        Administration d'une communauté gaming francophone sur Discord :
+        règles, gestion du staff, événements, modération, identité visuelle.
+      </div>
+      <div class="project-tech">
+        <span class="tech-chip">Discord</span>
+        <span class="tech-chip">Management</span>
+        <span class="tech-chip">Stratégie communautaire</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="section-header reveal">
+    <span class="section-num">06.</span>
+    <h2 class="section-title">Vision</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="vision-block reveal">
+    <p class="vision-text">
+      Je veux construire le <em>premier grand univers traditionnel Bénino-Africain</em>
+      dans le jeu vidéo et l'animation — une franchise ancrée dans les traditions, la culture
+      et la mythologie du Bénin et de l'Afrique, capable d'atteindre
+      <em>la portée mondiale des mangas et animes japonais</em>,
+      mais qui parle enfin à l'Afrique et au monde de ce que nous sommes vraiment.
+    </p>
+    <div class="vision-meta">
+      <div class="vision-stat">
+        <span class="vision-stat-num">1er</span>
+        <span class="vision-stat-label">Univers Gaming Bénino-Africain</span>
+      </div>
+      <div class="vision-stat">
+        <span class="vision-stat-num">🌍</span>
+        <span class="vision-stat-label">Portée Mondiale</span>
+      </div>
+      <div class="vision-stat">
+        <span class="vision-stat-num">∞</span>
+        <span class="vision-stat-label">Richesse culturelle africaine</span>
+      </div>
+      <div class="vision-stat">
+        <span class="vision-stat-num">2027</span>
+        <span class="vision-stat-label">Master Game Dev — UQAC</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <span class="section-num">07.</span>
+    <h2 class="section-title">Contact</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <h3>Construisons quelque chose ensemble.</h3>
+      <p>Open to collaborations, opportunités académiques, projets créatifs autour du jeu vidéo, du marketing digital et de la culture africaine.</p>
+      <div class="contact-links">
+        <a href="mailto:benbequeur@gmail.com" class="contact-link">
+          <span class="contact-link-icon">✉️</span>
+          benbequeur@gmail.com
+        </a>
+        <a href="mailto:mouhamedalkebir@gmail.com" class="contact-link">
+          <span class="contact-link-icon">✉️</span>
+          mouhamedalkebir@gmail.com
+        </a>
+        <a href="#" class="contact-link">
+          <span class="contact-link-icon">💬</span>
+          Discord — One State RP FR
+        </a>
+        <a href="#" class="contact-link">
+          <span class="contact-link-icon">🎓</span>
+          UQAC — Candidature 2027
+        </a>
+        <a href="#" class="contact-link">
+          <span class="contact-link-icon">🌍</span>
+          Cotonou, Bénin
+        </a>
+        <a href="https://monprofilal.com" class="contact-link">
+          <span class="contact-link-icon">🌐</span>
+          monprofilal.com
+        </a>
+      </div>
+    </div>
+    <div class="contact-form reveal">
+      <div class="form-group">
+        <label class="form-label">// Nom</label>
+        <input class="form-input" type="text" placeholder="Votre nom" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">// Email</label>
+        <input class="form-input" type="email" placeholder="votre@email.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">// Sujet</label>
+        <input class="form-input" type="text" placeholder="Collaboration / Projet / Question" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">// Message</label>
+        <textarea class="form-textarea" rows="5" placeholder="Votre message..."></textarea>
+      </div>
+      <button class="btn btn-primary" style="align-self:flex-start" onclick="handleSend(this)">ENVOYER ›</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p>© 2026 <span>ALKEBIR — Mouhamed Al-Kêbir AMOUSSA</span> · Cotonou, Bénin</p>
+  <p style="margin-top:0.4rem">
+    <a href="https://monprofilal.com">monprofilal.com</a> ·
+    <a href="mailto:benbequeur@gmail.com">benbequeur@gmail.com</a> ·
+    <a href="mailto:mouhamedalkebir@gmail.com">mouhamedalkebir@gmail.com</a>
+  </p>
+</footer>
+
+<script>
+/* ── BACKGROUND CANVAS ── */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], stars = [];
+
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < 75; i++) {
+    particles.push({
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-0.5)*0.35, vy: (Math.random()-0.5)*0.35,
+      r: Math.random()*1.4+0.3,
+      color: Math.random()>0.6?'#00d4ff':Math.random()>0.5?'#f0b429':'#7c3aed',
+      alpha: Math.random()*0.5+0.15
+    });
+  }
+}
+
+function drawGrid() {
+  const sp = 60, offsetY = (window.scrollY*0.08)%sp;
+  ctx.strokeStyle = 'rgba(0,212,255,0.035)'; ctx.lineWidth = 1;
+  for (let x=0; x<W; x+=sp) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y=-offsetY; y<H; y+=sp) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+}
+
+function drawGlow() {
+  const g = ctx.createRadialGradient(W/2,H*0.55,0,W/2,H*0.55,W*0.75);
+  g.addColorStop(0,'rgba(124,58,237,0.055)'); g.addColorStop(0.5,'rgba(0,212,255,0.025)'); g.addColorStop(1,'transparent');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill(); ctx.globalAlpha=1;
+  });
+  for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++){
+    const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, d=Math.sqrt(dx*dx+dy*dy);
+    if(d<95){ ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y);
+      ctx.strokeStyle=`rgba(0,212,255,${0.055*(1-d/95)})`; ctx.lineWidth=0.5; ctx.stroke(); }
+  }
+}
+
+function drawStars() {
+  if(Math.random()<0.018) stars.push({x:Math.random()*W,y:0,len:70+Math.random()*60,speed:3.5+Math.random()*3,alpha:1});
+  stars = stars.filter(s=>s.alpha>0);
+  stars.forEach(s=>{
+    s.y+=s.speed; s.x+=s.speed*0.28; s.alpha-=0.014;
+    const g=ctx.createLinearGradient(s.x,s.y,s.x-s.len*0.28,s.y-s.len);
+    g.addColorStop(0,`rgba(255,255,255,${s.alpha})`); g.addColorStop(1,'transparent');
+    ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(s.x-s.len*0.28,s.y-s.len);
+    ctx.strokeStyle=g; ctx.lineWidth=1.4; ctx.stroke();
+  });
+}
+
+function animate() {
+  ctx.clearRect(0,0,W,H);
+  drawGrid(); drawGlow(); drawParticles(); drawStars();
+  requestAnimationFrame(animate);
+}
+
+resize(); initParticles(); animate();
+window.addEventListener('resize',()=>{resize();initParticles();});
+
+/* ── SCROLL REVEAL ── */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+/* ── NAV ACTIVE ── */
+window.addEventListener('scroll',()=>{
+  let cur='';
+  document.querySelectorAll('section[id]').forEach(s=>{ if(window.scrollY>=s.offsetTop-200) cur=s.id; });
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.style.color = a.getAttribute('href')===`#${cur}` ? 'var(--cyan)' : '';
+  });
+});
+
+/* ── CONTACT ── */
+function handleSend(btn) {
+  btn.textContent='✓ MESSAGE ENVOYÉ';
+  btn.style.background='#00ff88';
+  setTimeout(()=>{ btn.textContent='ENVOYER ›'; btn.style.background=''; }, 3000);
+}
+</script>
+</body>
+</html>
